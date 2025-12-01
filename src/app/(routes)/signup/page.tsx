@@ -111,8 +111,6 @@ const SignUp = () => {
     });
   };
 
-
-
   const resendOtpMutation = useMutation({
     mutationFn: async () => {
       const response = await axios.post(
@@ -158,17 +156,17 @@ const SignUp = () => {
     });
   };
 
-  const handleResendOtp = () => {
-    if (!canResend) return;
+  // const handleResendOtp = () => {
+  //   if (!canResend) return;
 
-    const loadingToast = toast.loading("Resending OTP...");
+  //   const loadingToast = toast.loading("Resending OTP...");
 
-    resendOtpMutation.mutate(undefined, {
-      onSettled: () => {
-        toast.dismiss(loadingToast);
-      },
-    });
-  };
+  //   resendOtpMutation.mutate(undefined, {
+  //     onSettled: () => {
+  //       toast.dismiss(loadingToast);
+  //     },
+  //   });
+  // };
 
   const handleOtpChange = (index: number, value: string) => {
     if (!/^[0-9]?$/.test(value)) return;
@@ -191,6 +189,11 @@ const SignUp = () => {
     }
   };
 
+  const handleResendOtp = () => {
+    if (userData) {
+      signUpMutation.mutate(userData);
+    }
+  };
   const isSignUpLoading = signUpMutation.isPending;
   const isVerifyOtpLoading = verifyOtpMutation.isPending;
   const isResendOtpLoading = resendOtpMutation.isPending;
@@ -231,7 +234,6 @@ const SignUp = () => {
               <div className="space-y-4">
                 <div>
                   <label
-                    htmlFor="name"
                     className="text-gray-700 mb-1 block font-medium"
                   >
                     Name
@@ -254,7 +256,6 @@ const SignUp = () => {
 
                 <div>
                   <label
-                    htmlFor="email"
                     className="text-gray-700 mb-1 block font-medium"
                   >
                     Email
@@ -281,7 +282,6 @@ const SignUp = () => {
 
                 <div>
                   <label
-                    htmlFor="password"
                     className="text-gray-700 mb-1 block font-medium"
                   >
                     Password

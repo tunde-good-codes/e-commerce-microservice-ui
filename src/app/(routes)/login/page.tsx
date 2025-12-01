@@ -83,7 +83,7 @@ const Login = () => {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)}>
-            <label htmlFor="email" className="text-gray-700 mb-1 block">
+            <label  className="text-gray-700 mb-1 block">
               Email
             </label>
             <input
@@ -105,7 +105,7 @@ const Login = () => {
               </p>
             )}
 
-            <label htmlFor="password" className="text-gray-700 mb-1 block mt-4">
+            <label  className="text-gray-700 mb-1 block mt-4">
               Password
             </label>
             <div className="relative">
