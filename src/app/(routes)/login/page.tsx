@@ -1,6 +1,7 @@
 "use client";
 
 import GoogleButton from "@/shared/components/google-button";
+import axiosInstance from "@/utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
@@ -27,24 +28,41 @@ const Login = () => {
     formState: { errors },
   } = useForm<FormData>();
 
+
+
+
   const loginMutation = useMutation({
-    mutationFn: async (data: FormData) => {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_URI}/auth/login`,
-        data,
-        { withCredentials: true }
-      );
-      return response.data;
-    },
-    onSuccess: (data) => {
-      toast.success("Login successful! Redirecting...");
-      router.push("/");
-    },
-    onError: (error: any) => {
-      const errorMessage = error.response?.data?.message || "Login failed.";
-      toast.error(errorMessage);
-    },
-  });
+  mutationFn: async (data: FormData) => {
+    // Use axiosInstance instead of axios
+    const response = await axiosInstance.post('/auth/login', data);
+    return response.data;
+  },
+  onSuccess: (data) => {
+    // Store tokens if they're in the response
+    if (data.accessToken) {
+      localStorage.setItem('accessToken', data.accessToken);
+    }
+    if (data.refreshToken) {
+      localStorage.setItem('refreshToken', data.refreshToken);
+    }
+    
+    // Set default Authorization header
+    if (data.accessToken) {
+      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
+    }
+    
+    toast.success("Login successful! Redirecting...");
+    router.push("/");
+  },
+  onError: (error: any) => {
+    // Clear any stored tokens on error
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    
+    const errorMessage = error.response?.data?.message || "Login failed.";
+    toast.error(errorMessage);
+  },
+});
 
   const onSubmit = (data: FormData) => {
     const loadingToast = toast.loading("Signing you in...");
